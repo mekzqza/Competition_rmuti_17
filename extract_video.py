@@ -1,27 +1,26 @@
-import os
+import sys
+from pathlib import Path
 
 import cv2
 
-video_path = "C:/Users/USER/Desktop/Competition_rmuti_17/video.mp4"
-output_dir = "C:/Users/USER/Desktop/Competition_rmuti_17/extract_video"
-frame_interval = 30 -- # Extract every 30th frame
+video_path = sys.argv[1] if len(sys.argv) > 1 else "video.mp4"
+out_dir = Path(sys.argv[2] if len(sys.argv) > 2 else "extract_video")
+every = int(sys.argv[3]) if len(sys.argv) > 3 else 30
+
+out_dir.mkdir(parents=True, exist_ok=True)
 
 cap = cv2.VideoCapture(video_path)
+assert cap.isOpened(), f"cannot open video: {video_path}"
 
-fps = cap.get(cv2.CAP_PROP_FPS)
-frame_count = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
-
-count = 0
-saved = 0
+read = saved = 0
 while True:
-    ret, frame = cap.read()
-    if not ret:
+    ok, frame = cap.read()
+    if not ok:
         break
-
-    if count % frame_interval == 0:
-        cv2.imwrite(f"{output_dir}/frame_{saved:04d}.jpg", frame)
+    if read % every == 0:
+        cv2.imwrite(str(out_dir / f"frame_{saved:04d}.jpg"), frame)
         saved += 1
-
-    count += 1
+    read += 1
 
 cap.release()
+print(f"read {read} frames -> saved {saved} imgs to {out_dir.resolve()}")
