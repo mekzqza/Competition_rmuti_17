@@ -1,3 +1,8 @@
+"yolo detect train model=yolo11n.pt data=data.yaml epochs=100 imgsz=640 batch=16 device=0 
+ yolo detect val model=train/weights/best.pt data=data.yaml imgsz=640 device=0
+ yolo export model=train/weights/best.pt format=onnx imgsz=640 opset=12 simplify=True dymanic=False"
+
+
 """เทรน (ขั้น 5) — หา pretrained weight ให้เอง แล้วเลือก flag ให้ถูก
 
     python train.py           # epochs อัตโนมัติ
